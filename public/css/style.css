@@ -1,0 +1,288 @@
+/* Base Styling */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  flex: 1;
+}
+
+/* Navbar */
+.navbar {
+  height: 5rem;
+  background-color: white;
+}
+
+.fa-compass {
+  color: #fe424d;
+  font-size: 2rem;
+}
+
+.nav-link {
+  color: #222222 !important;
+}
+
+/* Footer */
+.f-info-links a {
+  text-decoration: none;
+  color: #222222;
+}
+
+.f-info-links a:hover {
+  text-decoration: underline;
+  color: #222222;
+}
+
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
+  width: 100%;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-info-socials i {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+
+.f-info {
+  text-align: center;
+  display: flex;
+  background-color: #ebebeb;
+  height: 8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: space-evenly;
+}
+
+/* Cards */
+.listing-card {
+  border: none !important;
+  margin-bottom: 2rem;
+}
+
+.card-img-top {
+  border-radius: 1rem !important;
+  width: 100% !important;
+  object-fit: cover !important;
+}
+
+.card-body {
+  padding: 0 !important;
+}
+
+.card-text p {
+  font-weight: 400;
+}
+
+.listing-link {
+  text-decoration: none;
+}
+
+/* Card Overlay */
+.card-img-overlay {
+  opacity: 0;
+}
+
+.card-img-overlay:hover {
+  opacity: 0;
+  background-color: white;
+}
+
+/* Buttons */
+.add-btn,
+.edit-btn {
+  background-color: #fe424d !important;
+  border: none !important;
+}
+
+/* Show Page */
+.show-img {
+  height: 30vh;
+}
+
+.btns {
+  display: flex;
+}
+
+.show-card {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/*  Theme Colors */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #007bff;
+}
+
+.dark-theme {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #1e90ff;
+}
+
+/* Dark Mode */
+body.dark-theme {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .f-info {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+body.dark-theme .f-info-links a,
+body.dark-theme .f-info-socials i,
+body.dark-theme .f-info-brand {
+  color: #fff !important;
+}
+
+body.dark-theme .listing-card,
+body.dark-theme .card {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+body.dark-theme .card-img-top {
+  background-color: #222 !important;
+}
+
+body.dark-theme input[type="submit"]:disabled,
+body.dark-theme button:disabled,
+body.dark-theme .btn:disabled {
+  background-color: #222 !important;
+  color: #aaa !important;
+  border: 1px solid #444 !important;
+  opacity: 1 !important;
+}
+
+/* Navbar + Links in Dark Mode */
+body.dark-theme .navbar {
+  background-color: #1c1c1c !important;
+  border-bottom: 1px solid #444 !important;
+}
+
+body.dark-theme .nav-link {
+  color: #fff !important;
+}
+
+body.dark-theme .nav-link:hover {
+  color: #1e90ff !important;
+}
+
+/* Smooth Transition (GLOBAL) */
+body,
+.navbar,
+.f-info,
+.card,
+.listing-card,
+.card-img-top,
+.btn,
+input,
+textarea,
+.nav-link,
+.f-info-links a,
+.f-info-socials i {
+  transition: background-color 0.4s ease, color 0.4s ease,
+    border-color 0.4s ease, box-shadow 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+  }
+
+  .navbar {
+    height: auto;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .container {
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  .listing-card,
+  .show-card {
+    width: 100%;
+    margin: 0 0 2rem 0;
+    display: block;
+  }
+
+  .card-img-top,
+  .show-img {
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: cover !important;
+  }
+
+  .f-info {
+    flex-direction: column;
+    height: auto;
+    padding: 12px 0;
+    font-size: 1em;
+  }
+
+  .f-info-links,
+  .f-info-socials,
+  .f-info-brand {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .btns {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .add-btn,
+  .edit-btn {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 1em;
+  }
+
+  .nav-link {
+    display: block;
+    margin: 0.5em 0;
+  }
+}
+
+/* Footer Social Colors */
+.f-info-socials .fa-square-facebook {
+  color: #1877f3;
+}
+
+.f-info-socials .fa-square-instagram {
+  color: #fe424d;
+}
+
+.f-info-socials .fa-square-github {
+  color: #171515;
+}
+
+.f-info-socials .fa-linkedin {
+  color: #0077b5;
+}
+
+

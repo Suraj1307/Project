@@ -1,0 +1,82 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" href="/listings">
+      <i class="fa-regular fa-compass"></i>
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar content -->
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Left links -->
+      <div class="navbar-nav">
+        <a class="nav-link" href="/listings">Explore</a>
+      </div>
+
+      <!-- ✅ Centered search (desktop) / full width (mobile) -->
+      <div id="searchBar" class="mx-auto my-2 my-md-0 w-100 w-md-auto">
+        <form
+          class="d-flex align-items-center justify-content-center"
+          role="search"
+          method="GET"
+          action="/listings"
+          autocomplete="off"
+        >
+          <input
+            class="form-control me-2 rounded-pill py-1"
+            type="search"
+            name="q"
+            placeholder="Search by location or country"
+            aria-label="Search"
+            value="<%= typeof query !== 'undefined' ? query : '' %>"
+            style="max-width: 400px; padding-left: 1rem;"
+            required
+          />
+
+          <button
+            class="btn btn-dark rounded-pill px-3 py-1 d-flex align-items-center"
+            type="submit"
+          >
+            <i class="fa-solid fa-magnifying-glass me-2"></i>
+            <span>Search</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right links -->
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings/new">Airbnb your home</a>
+
+        <% if(!currUser){ %>
+          <a class="nav-link" href="/signup"><b>Sign up</b></a>
+          <a class="nav-link" href="/login"><b>Log in</b></a>
+        <% } %>
+
+        <% if(currUser){ %>
+          <a class="nav-link" href="/logout">Log out</a>
+        <% } %>
+
+        <!-- Theme toggle -->
+        <button
+          id="theme-toggle"
+          class="theme-toggle nav-link btn btn-link"
+          style="border:none; cursor:pointer;"
+        >
+          🌙 Dark Mode
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
