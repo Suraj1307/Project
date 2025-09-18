@@ -108,6 +108,9 @@ app.use("/", userRouter);
 
 //Reviews
 
+app.get('/', (req, res) => {
+  res.redirect('/listings');
+});
 
 // 404 handler (for routes not found)
 app.use((req, res, next) => {
