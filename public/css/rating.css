@@ -195,3 +195,43 @@
   -webkit-transition: background-position .7s;
   transition: background-position .7s;
 }
+
+/* Container box for star rating inside review cards */
+.star-rating-box {
+  display: block !important;
+  width: 160px !important;        /* fixed width fitting 5 stars */
+  min-width: 160px !important;
+  padding: 8px 10px !important;
+  margin: 10px auto !important;   /* center horizontally */
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;    /* prevent overflow */
+}
+
+/* Starability stars inside the .star-rating-box */
+.star-rating-box p.starability-result {
+  width: 150px !important;        /* size for 5 stars */
+  margin: 0 auto !important;
+  display: inline-block !important;
+  float: none !important;
+  padding: 0 !important;
+}
+
+/* Additional overrides for review card text */
+.card .card-text {
+  margin-bottom: 0.5rem; /* slight spacing */
+}
+
+/* Adjust card col-5 margin on very small screens */
+@media (max-width: 576px) {
+  .card.col-5.ms-3 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: auto;
+  }
+}
+
+
