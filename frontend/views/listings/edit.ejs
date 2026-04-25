@@ -1,0 +1,144 @@
+<%= layout("/layouts/boilerplate")%>
+<% const categories = Array.isArray(listingCategories) ? listingCategories : []; %>
+<% const amenitiesList = Array.isArray(listingAmenities) ? listingAmenities : []; %>
+<section class="form-shell">
+  <div class="form-shell__intro">
+    <p class="eyebrow">Host tools</p>
+    <h1>Edit your listing</h1>
+    <p>Keep pricing, guest details, and amenities up to date so travelers can book with confidence.</p>
+  </div>
+
+  <form
+    action="/listings/<%= listing._id %>?_method=PUT"
+    method="POST"
+    novalidate
+    class="needs-validation listing-form"
+    enctype="multipart/form-data"
+  >
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="listing-form-grid">
+      <label class="form-block">
+        <span>Title</span>
+        <input
+          id="title"
+          type="text"
+          name="listing[title]"
+          value="<%= listing.title %>"
+          class="form-control"
+          required
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Category</span>
+        <select name="listing[category]" class="form-select" required>
+          <% for (const category of categories) { %>
+            <option value="<%= category %>" <%= listing.category === category ? "selected" : "" %>>
+              <%= category %>
+            </option>
+          <% } %>
+        </select>
+      </label>
+
+      <label class="form-block form-block--full">
+        <span>Description</span>
+        <textarea
+          id="description"
+          name="listing[description]"
+          class="form-control"
+          rows="5"
+          required
+        ><%= listing.description %></textarea>
+      </label>
+
+      <label class="form-block">
+        <span>Price per night</span>
+        <input
+          id="price"
+          type="number"
+          name="listing[price]"
+          value="<%= listing.price %>"
+          class="form-control"
+          min="0"
+          required
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Maximum guests</span>
+        <input
+          type="number"
+          name="listing[maxGuests]"
+          value="<%= listing.maxGuests %>"
+          class="form-control"
+          min="1"
+          max="20"
+          required
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Country</span>
+        <input
+          id="country"
+          type="text"
+          name="listing[country]"
+          value="<%= listing.country %>"
+          class="form-control"
+          required
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Location</span>
+        <input
+          id="location"
+          type="text"
+          name="listing[location]"
+          value="<%= listing.location %>"
+          class="form-control"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="mb-4">
+      <p class="mb-2"><strong>Current image</strong></p>
+      <% if (originalImageUrl) { %>
+        <img src="<%= originalImageUrl %>" alt="Current listing image" class="current-image-preview" />
+      <% } else { %>
+        <p class="text-muted mb-0">No image uploaded yet.</p>
+      <% } %>
+    </div>
+
+    <label class="form-block form-block--full">
+      <span>Upload a new image</span>
+      <input
+        type="file"
+        name="listing[image]"
+        class="form-control"
+        accept=".jpg,.jpeg,.png"
+      />
+    </label>
+
+    <div class="amenity-selector">
+      <p class="mb-2"><strong>Amenities</strong></p>
+      <div class="amenity-grid">
+        <% for (const amenity of amenitiesList) { %>
+          <label class="amenity-card amenity-check">
+            <input
+              type="checkbox"
+              name="listing[amenities]"
+              value="<%= amenity %>"
+              <%= (listing.amenities || []).includes(amenity) ? "checked" : "" %>
+            />
+            <span><%= amenity %></span>
+          </label>
+        <% } %>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-dark edit-btn mt-4">Update Listing</button>
+  </form>
+</section>

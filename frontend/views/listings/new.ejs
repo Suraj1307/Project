@@ -1,0 +1,131 @@
+<%= layout("/layouts/boilerplate")%>
+<% const categories = Array.isArray(listingCategories) ? listingCategories : []; %>
+<% const amenitiesList = Array.isArray(listingAmenities) ? listingAmenities : []; %>
+<section class="form-shell">
+  <div class="form-shell__intro">
+    <p class="eyebrow">Host tools</p>
+    <h1>Create a new StaySpot listing</h1>
+    <p>Share the details guests care about first: vibe, location, capacity, and essential amenities.</p>
+  </div>
+
+  <form
+    method="POST"
+    action="/listings"
+    novalidate
+    class="needs-validation listing-form"
+    enctype="multipart/form-data"
+  >
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="listing-form-grid">
+      <label class="form-block">
+        <span>Title</span>
+        <input
+          id="title"
+          name="listing[title]"
+          placeholder="Add a catchy title"
+          type="text"
+          required
+          class="form-control"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Category</span>
+        <select name="listing[category]" class="form-select" required>
+          <% for (const category of categories) { %>
+            <option value="<%= category %>"><%= category %></option>
+          <% } %>
+        </select>
+      </label>
+
+      <label class="form-block form-block--full">
+        <span>Description</span>
+        <textarea
+          id="description"
+          name="listing[description]"
+          placeholder="Describe the stay, neighborhood, and standout details"
+          required
+          class="form-control"
+          rows="5"
+        ></textarea>
+      </label>
+
+      <label class="form-block">
+        <span>Price per night</span>
+        <input
+          id="price"
+          name="listing[price]"
+          placeholder="1200"
+          type="number"
+          min="0"
+          required
+          class="form-control"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Maximum guests</span>
+        <input
+          name="listing[maxGuests]"
+          type="number"
+          min="1"
+          max="20"
+          value="2"
+          required
+          class="form-control"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Country</span>
+        <input
+          id="country"
+          name="listing[country]"
+          placeholder="India"
+          type="text"
+          required
+          class="form-control"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Location</span>
+        <input
+          id="location"
+          name="listing[location]"
+          placeholder="Goa"
+          type="text"
+          required
+          class="form-control"
+        />
+      </label>
+
+      <label class="form-block form-block--full">
+        <span>Listing image</span>
+        <input
+          id="image"
+          name="listing[image]"
+          type="file"
+          class="form-control"
+          accept=".jpg,.jpeg,.png"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="amenity-selector">
+      <p class="mb-2"><strong>Amenities</strong></p>
+      <div class="amenity-grid">
+        <% for (const amenity of amenitiesList) { %>
+          <label class="amenity-card amenity-check">
+            <input type="checkbox" name="listing[amenities]" value="<%= amenity %>" />
+            <span><%= amenity %></span>
+          </label>
+        <% } %>
+      </div>
+    </div>
+
+    <button class="btn btn-dark add-btn mt-4" type="submit">Publish Listing</button>
+  </form>
+</section>

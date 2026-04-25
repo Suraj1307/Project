@@ -1,0 +1,42 @@
+<%= layout("/layouts/boilerplate")%>
+
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="form-shell__intro">
+      <p class="eyebrow">Welcome back</p>
+      <h1>Log in to StaySpot</h1>
+      <p>Access your saved stays, bookings, reviews, and host tools.</p>
+    </div>
+
+    <form action="/login" method="post" class="needs-validation auth-form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+      <label class="form-block">
+        <span>Username</span>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          class="form-control"
+          placeholder="Enter your username"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Password</span>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          minlength="8"
+          required
+          class="form-control"
+          placeholder="Enter your password"
+        />
+      </label>
+
+      <button class="btn btn-dark" type="submit">Log in</button>
+    </form>
+  </div>
+</section>

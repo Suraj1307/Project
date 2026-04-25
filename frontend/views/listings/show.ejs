@@ -1,0 +1,210 @@
+<%= layout("/layouts/boilerplate")%>
+<% const reviewCount = Array.isArray(listing.reviews) ? listing.reviews.length : (listing.ratingCount || 0); %>
+<% const averageRating = reviewCount ? ((listing.averageRating || 0).toFixed(1)) : "New"; %>
+<% const ownerName = listing.owner && listing.owner.username ? listing.owner.username : "StaySpot Host"; %>
+
+<section class="listing-hero">
+  <div class="listing-hero-copy">
+    <p class="eyebrow"><%= listing.category || "Trending" %></p>
+    <h1><%= listing.title %></h1>
+    <div class="listing-hero-meta">
+      <span><i class="fa-solid fa-star"></i> <%= averageRating %></span>
+      <span><%= reviewCount %> review<%= reviewCount === 1 ? "" : "s" %></span>
+      <span><%= listing.location %>, <%= listing.country %></span>
+      <span><%= listing.maxGuests || 2 %> guests</span>
+    </div>
+  </div>
+
+  <% if (currUser) { %>
+    <form
+      method="POST"
+      action="/listings/<%= listing._id %>/wishlist<%= isWishlisted ? '?_method=DELETE' : '' %>"
+      class="wishlist-inline-form"
+    >
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit" class="btn <%= isWishlisted ? 'btn-dark' : 'btn-outline-dark' %>">
+        <i class="fa-solid fa-heart"></i>
+        <%= isWishlisted ? "Saved" : "Save" %>
+      </button>
+    </form>
+  <% } %>
+</section>
+
+<section class="show-layout">
+  <div class="show-main">
+    <div class="show-gallery">
+      <div class="image-skeleton"></div>
+      <img
+        src="<%= listing.image?.url %>"
+        class="show-img js-fade-image"
+        alt="<%= listing.title %>"
+      />
+    </div>
+
+    <div class="show-section">
+      <div class="host-line">
+        <div>
+          <p class="eyebrow">Hosted by</p>
+          <h2><%= ownerName %></h2>
+        </div>
+        <div class="show-stat-badges">
+          <span class="stat-badge"><%= listing.maxGuests || 2 %> guests</span>
+          <span class="stat-badge"><%= listing.category || "Trending" %></span>
+        </div>
+      </div>
+      <p class="show-description"><%= listing.description %></p>
+    </div>
+
+    <div class="show-section">
+      <h3>Amenities</h3>
+      <div class="amenity-grid">
+        <% for (const amenity of (listing.amenities || [])) { %>
+          <span class="amenity-card"><%= amenity %></span>
+        <% } %>
+        <% if (!(listing.amenities || []).length) { %>
+          <span class="text-muted">Amenities will be added soon.</span>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="show-section">
+      <h3>Map Location</h3>
+      <span
+        id="listing-address"
+        data-address="<%= listing.location %>, <%= listing.country %>"
+        hidden
+      ></span>
+      <div id="map" class="map-panel"></div>
+      <div class="map-actions">
+        <button id="directionBtn" class="btn btn-outline-dark">Get Directions</button>
+        <a
+          class="btn btn-dark"
+          href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(`${listing.location}, ${listing.country}`) %>"
+          target="_blank"
+          rel="noopener"
+        >
+          Open Map
+        </a>
+      </div>
+    </div>
+
+    <% if(currUser && listing.owner && currUser._id.equals(listing.owner._id)) { %>
+      <div class="owner-actions">
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit Listing</a>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button class="btn btn-outline-dark" type="submit">Delete Listing</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="show-section">
+      <div class="review-header">
+        <div>
+          <p class="eyebrow">Reviews</p>
+          <h3>What guests are saying</h3>
+        </div>
+        <div class="review-summary-pill">
+          <i class="fa-solid fa-star"></i>
+          <strong><%= averageRating %></strong>
+          <span><%= reviewCount %> review<%= reviewCount === 1 ? "" : "s" %></span>
+        </div>
+      </div>
+
+      <% if(currUser) { %>
+        <form
+          method="POST"
+          action="/listings/<%= listing._id %>/reviews"
+          novalidate
+          class="needs-validation review-form-panel"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <div class="mb-3 mt-3">
+            <label for="rating" class="form-label">Rating</label>
+            <fieldset class="starability-slot">
+              <input
+                type="radio"
+                id="no-rate"
+                class="input-no-rate"
+                name="review[rating]"
+                value="1"
+                checked
+                aria-label="No rating."
+              />
+              <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+          </div>
+          <div class="mb-3 mt-3">
+            <label for="comment">Comment</label>
+            <textarea
+              name="review[comment]"
+              id="comment"
+              rows="5"
+              class="form-control"
+              required
+            ></textarea>
+            <div class="invalid-feedback">Please add a comment for your review.</div>
+          </div>
+          <button class="btn btn-dark">Submit Review</button>
+        </form>
+      <% } %>
+
+      <div class="review-grid">
+        <% if (!listing.reviews.length) { %>
+          <p class="text-muted mb-0">No reviews yet. Be the first guest to leave one.</p>
+        <% } %>
+
+        <% for (const review of listing.reviews) { %>
+          <article class="review-card">
+            <div class="review-card-head">
+              <div>
+                <h4>@<%= review.author && review.author.username ? review.author.username : "former-guest" %></h4>
+                <small><%= new Date(review.createdAt).toLocaleDateString("en-IN") %></small>
+              </div>
+              <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+            </div>
+            <p class="card-text"><%= review.comment %></p>
+
+            <% if (currUser && review.author && currUser._id.equals(review.author._id)) { %>
+              <form
+                class="mt-3"
+                method="POST"
+                action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+              >
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button class="btn btn-sm btn-outline-dark" type="submit">Delete Review</button>
+              </form>
+            <% } %>
+          </article>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <aside class="booking-panel">
+    <div class="booking-card">
+      <p class="eyebrow">Book this stay</p>
+      <h3>&#8377;<%= listing.price.toLocaleString("en-IN") %> <small>/night</small></h3>
+      <p class="booking-total">&#8377;<%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %> incl. taxes</p>
+      <ul class="booking-points">
+        <li>Flexible planning for up to <%= listing.maxGuests || 2 %> guests</li>
+        <li>Instant access to directions and property details</li>
+        <li>Saved to your wishlist with one tap</li>
+      </ul>
+      <% if (currUser) { %>
+        <a href="#comment" class="btn btn-dark w-100">Reserve This Stay</a>
+      <% } else { %>
+        <a href="/login" class="btn btn-dark w-100">Log in to book</a>
+      <% } %>
+    </div>
+  </aside>
+</section>

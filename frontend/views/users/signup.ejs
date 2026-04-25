@@ -1,0 +1,55 @@
+<%= layout("/layouts/boilerplate")%>
+
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="form-shell__intro">
+      <p class="eyebrow">Create account</p>
+      <h1>Join StaySpot</h1>
+      <p>Save favorite stays, leave reviews, and manage listings in one place.</p>
+    </div>
+
+    <form action="/signup" method="post" class="needs-validation auth-form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+      <label class="form-block">
+        <span>Username</span>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          class="form-control"
+          placeholder="Choose a username"
+        />
+        <div class="valid-feedback">Looks good!</div>
+      </label>
+
+      <label class="form-block">
+        <span>Email</span>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          class="form-control"
+          placeholder="Enter your email"
+        />
+      </label>
+
+      <label class="form-block">
+        <span>Password</span>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          minlength="8"
+          required
+          class="form-control"
+          placeholder="Create a password"
+        />
+      </label>
+
+      <button class="btn btn-dark" type="submit">Create account</button>
+    </form>
+  </div>
+</section>

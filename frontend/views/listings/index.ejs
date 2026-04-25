@@ -1,0 +1,213 @@
+<%= layout("/layouts/boilerplate")%>
+<% const categories = Array.isArray(listingCategories) ? listingCategories : []; %>
+<% const amenitiesList = Array.isArray(listingAmenities) ? listingAmenities : []; %>
+<% const activeFilters = filters || {}; %>
+<% const activeWishlistIds = Array.isArray(wishlistIds) ? wishlistIds : []; %>
+<% const activeSelectedAmenities = Array.isArray(selectedAmenities) ? selectedAmenities : []; %>
+
+<section class="hero-panel">
+  <div>
+    <p class="eyebrow">StaySpot</p>
+    <h1 class="hero-title">Find stays that feel worth the trip.</h1>
+    <p class="hero-copy">
+      Search by destination, narrow by budget and amenities, and save your favorites as you plan.
+    </p>
+  </div>
+
+  <form action="/listings" method="GET" class="search-shell">
+    <div class="search-grid">
+      <label class="search-field">
+        <span>Where</span>
+        <input
+          type="search"
+          name="q"
+          placeholder="Goa, Jaipur, Paris..."
+          value="<%= query || '' %>"
+        />
+      </label>
+
+      <label class="search-field">
+        <span>Category</span>
+        <select name="category">
+          <option value="">All categories</option>
+          <% for (const category of categories) { %>
+            <option value="<%= category %>" <%= selectedCategory === category ? "selected" : "" %>>
+              <%= category %>
+            </option>
+          <% } %>
+        </select>
+      </label>
+
+      <label class="search-field">
+        <span>Guests</span>
+        <input
+          type="number"
+          name="guests"
+          min="1"
+          max="20"
+          placeholder="2"
+          value="<%= activeFilters.guests || '' %>"
+        />
+      </label>
+
+      <label class="search-field">
+        <span>Sort by</span>
+        <select name="sort">
+          <option value="newest" <%= activeFilters.sort === "newest" ? "selected" : "" %>>Newest</option>
+          <option value="rating-desc" <%= activeFilters.sort === "rating-desc" ? "selected" : "" %>>Top rated</option>
+          <option value="price-asc" <%= activeFilters.sort === "price-asc" ? "selected" : "" %>>Price: Low to high</option>
+          <option value="price-desc" <%= activeFilters.sort === "price-desc" ? "selected" : "" %>>Price: High to low</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="filter-bar">
+      <label class="search-field compact-field">
+        <span>Min price</span>
+        <input type="number" name="minPrice" min="0" placeholder="0" value="<%= activeFilters.minPrice || '' %>" />
+      </label>
+
+      <label class="search-field compact-field">
+        <span>Max price</span>
+        <input type="number" name="maxPrice" min="0" placeholder="15000" value="<%= activeFilters.maxPrice || '' %>" />
+      </label>
+
+      <div class="amenities-group">
+        <% for (const amenity of amenitiesList) { %>
+          <label class="amenity-pill">
+            <input
+              type="checkbox"
+              name="amenities"
+              value="<%= amenity %>"
+              <%= activeSelectedAmenities.includes(amenity) ? "checked" : "" %>
+            />
+            <span><%= amenity %></span>
+          </label>
+        <% } %>
+      </div>
+
+      <% if (currUser) { %>
+        <label class="favorite-toggle">
+          <input type="checkbox" name="favorites" value="1" <%= activeFilters.favoritesOnly ? "checked" : "" %> />
+          <span>Saved stays only</span>
+        </label>
+      <% } %>
+
+      <div class="search-actions">
+        <button class="btn btn-dark" type="submit">Apply Filters</button>
+        <a class="btn btn-outline-dark" href="/listings">Reset</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="filters-bar">
+  <% for (const category of categories) { %>
+    <a
+      href="/listings?<%= new URLSearchParams({
+        ...(query ? { q: query } : {}),
+        category,
+        ...(activeFilters.guests ? { guests: activeFilters.guests } : {}),
+      }).toString() %>"
+      class="filter-chip <%= selectedCategory === category ? 'active' : '' %>"
+    >
+      <span><%= category %></span>
+    </a>
+  <% } %>
+
+  <div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="flexSwitchCheckDefault"
+      />
+      <label class="form-check-label" for="flexSwitchCheckDefault">
+        Display total after taxes
+      </label>
+    </div>
+  </div>
+</section>
+
+<% if (searchMessage) { %>
+  <div class="alert <%= searchMessageType === 'success' ? 'alert-success' : 'alert-warning' %> mt-3" role="alert">
+    <%= searchMessage %>
+  </div>
+<% } %>
+
+<section class="listing-grid">
+  <% if (!allListings.length) { %>
+    <div class="empty-state">
+      <h2>No stays match this search.</h2>
+      <p>Try adjusting filters, broadening the destination, or clearing saved-only mode.</p>
+      <a href="/listings" class="btn btn-dark">See all stays</a>
+    </div>
+  <% } %>
+
+  <% for (let listing of allListings) { %>
+    <article class="listing-tile">
+      <div class="listing-media">
+        <a href="/listings/<%= listing._id %>" class="listing-media-link">
+          <div class="image-skeleton"></div>
+          <img
+            src="<%= listing.image.url %>"
+            class="card-img-top listing-card-image js-fade-image"
+            alt="<%= listing.title %>"
+            loading="lazy"
+          />
+        </a>
+
+        <% if (currUser) { %>
+          <% const isSaved = activeWishlistIds.includes(String(listing._id)); %>
+          <form
+            class="wishlist-form"
+            method="POST"
+            action="/listings/<%= listing._id %>/wishlist<%= isSaved ? '?_method=DELETE' : '' %>"
+          >
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button
+              type="submit"
+              class="wishlist-btn <%= isSaved ? 'active' : '' %>"
+              aria-label="<%= isSaved ? 'Remove from wishlist' : 'Save to wishlist' %>"
+            >
+              <i class="fa-solid fa-heart"></i>
+            </button>
+          </form>
+        <% } %>
+      </div>
+
+      <a href="/listings/<%= listing._id %>" class="listing-link listing-link-block">
+        <div class="listing-copy">
+          <div class="listing-topline">
+            <span class="listing-location"><%= listing.location %>, <%= listing.country %></span>
+            <span class="listing-rating">
+              <i class="fa-solid fa-star"></i>
+              <%= listing.ratingLabel %>
+              <% if (listing.ratingCount) { %>
+                <small>(<%= listing.ratingCount %>)</small>
+              <% } %>
+            </span>
+          </div>
+
+          <h3><%= listing.title %></h3>
+          <p class="listing-meta-line">
+            <span><%= listing.category || "Trending" %></span>
+            <span><%= listing.maxGuests || 2 %> guests</span>
+          </p>
+          <p class="listing-amenities-preview">
+            <%= (listing.amenities || []).slice(0, 3).join(" | ") || "Comfort-focused essentials" %>
+          </p>
+          <p class="listing-price-line">
+            <strong class="js-price-display" data-base-price="<%= listing.price %>">
+              &#8377;<%= listing.price.toLocaleString("en-IN") %>/night
+            </strong>
+            <span class="tax-info" data-base-price="<%= listing.price %>">
+              &#8377;<%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %> total incl. tax
+            </span>
+          </p>
+        </div>
+      </a>
+    </article>
+  <% } %>
+</section>
